@@ -38,4 +38,48 @@ export class ClienteService {
             }));
         return this.clientes;
     }
+
+    // Obtener un cliente
+    getCliente(id: string) {
+        // Recuperar registo desde la bd con el id
+        this.clienteDoc = this.db.doc<Cliente>(`clientes/${id}`);
+        this.cliente = this.clienteDoc.snapshotChanges().pipe(
+            map( accion => {
+                if (accion.payload.exists === false) {
+                    return null;
+                } else {
+                    const data = accion.payload.data() as Cliente;
+                    data.id = accion.payload.id;
+                    return data;
+                }
+            })
+        );
+        return this.cliente;
+    }
+
+    // Modificar cliente
+    modificarCliente(cliente: Cliente) {
+        // Obtener registro
+        this.clienteDoc = this.db.doc(`clientes/${cliente.id}`);
+        // Actualizar registro
+        this.clienteDoc.update(cliente);
+    }
+
+    // Eliminar cliente
+    eliminarCliente(cliente: Cliente) {
+        this.clienteDoc = this.db.doc(`clientes/${cliente.id}`);
+        // Eliminar el registro de la bd
+        this.clienteDoc.delete();
+    }
+
+    // Agregar Cliente
+    agregarCliente(cliente: Cliente) {
+        const clienteCollection = this.db.collection<Cliente>('clientes');
+        clienteCollection.add({
+            nombre: cliente.nombre,
+            apellido: cliente.apellido,
+            email: cliente.email,
+            saldo: cliente.saldo
+        });
+    }
 }
