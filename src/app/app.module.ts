@@ -23,6 +23,8 @@ import { from } from 'rxjs';
 import { ClienteService } from './services/cliente.service';
 import { LoginService } from './services/login.service';
 import { AuthGuard } from './guards/auth.guard';
+import { ConfiguracionService } from './services/configuracion.service';
+import { ConfiguracionGuard } from './guards/configuracion.guard';
 
 @NgModule({
   declarations: [
@@ -46,7 +48,14 @@ import { AuthGuard } from './guards/auth.guard';
     FormsModule,
     FlashMessagesModule.forRoot()
   ],
-  providers: [ClienteService, LoginService, AuthGuard],
+  providers: [
+    ClienteService,
+    LoginService,
+    AuthGuard,
+    ConfiguracionService,
+    {provide: FirestoreSettingsToken, useValue: {}},
+    ConfiguracionGuard
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
